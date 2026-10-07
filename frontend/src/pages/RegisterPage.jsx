@@ -1,29 +1,32 @@
 import { useState } from 'react'
-import { login } from '../api.js'
+import { signup } from '../api.js'
 import PasswordField from '../components/PasswordField.jsx'
 import './AuthForm.css'
 
-// `notice` is an optional { username, tone, text } shown above the form
-function LoginPage({ notice, onLogin, onShowRegister }) {
-  const knownUsername = notice?.username ?? ''
-  const [username, setUsername] = useState(knownUsername)
+function RegisterPage({ onRegistered, onShowLogin }) {
+  const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
+  const [confirmPassword, setConfirmPassword] = useState('')
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(false)
 
   async function handleSubmit(event) {
     event.preventDefault()
 
-    if (!username || !password) {
-      setError('Enter your username and password.')
+    if (!username || !password || !confirmPassword) {
+      setError('Enter a username, a password, and confirm the password.')
+      return
+    }
+    if (password !== confirmPassword) {
+      setError('Passwords do not match.')
       return
     }
 
     setError('')
     setLoading(true)
     try {
-      const token = await login(username, password)
-      onLogin({ username, token })
+      await signup(username, password, confirmPassword)
+      onRegistered(username)
     } catch (err) {
       setError(err.message)
     } finally {
@@ -34,16 +37,10 @@ function LoginPage({ notice, onLogin, onShowRegister }) {
   return (
     <main className="page">
       <section className="card">
-        <h1>Sign in</h1>
-        <p className="muted">Use your account to manage your teams.</p>
+        <h1>Create an account</h1>
+        <p className="muted">Choose a username and password to get started.</p>
 
         <form className="auth-form" onSubmit={handleSubmit} noValidate>
-          {notice && !error && (
-            <p className={`form-${notice.tone}`} role="status">
-              {notice.text}
-            </p>
-          )}
-
           {error && (
             <p className="form-error" role="alert">
               {error}
@@ -58,7 +55,7 @@ function LoginPage({ notice, onLogin, onShowRegister }) {
               autoComplete="username"
               autoCapitalize="none"
               spellCheck={false}
-              autoFocus={!knownUsername}
+              autoFocus
               value={username}
               onChange={(event) => setUsername(event.target.value)}
             />
@@ -67,21 +64,28 @@ function LoginPage({ notice, onLogin, onShowRegister }) {
           <PasswordField
             id="password"
             label="Password"
-            autoComplete="current-password"
-            autoFocus={Boolean(knownUsername)}
+            autoComplete="new-password"
             value={password}
             onChange={setPassword}
           />
 
+          <PasswordField
+            id="confirm-password"
+            label="Confirm password"
+            autoComplete="new-password"
+            value={confirmPassword}
+            onChange={setConfirmPassword}
+          />
+
           <button type="submit" className="button" disabled={loading}>
-            {loading ? 'Signing in…' : 'Sign in'}
+            {loading ? 'Creating account…' : 'Create account'}
           </button>
         </form>
 
         <p className="switch-page">
-          New here?{' '}
-          <button type="button" className="link-button" onClick={onShowRegister}>
-            Create an account
+          Already have an account?{' '}
+          <button type="button" className="link-button" onClick={onShowLogin}>
+            Sign in
           </button>
         </p>
       </section>
@@ -89,4 +93,4 @@ function LoginPage({ notice, onLogin, onShowRegister }) {
   )
 }
 
-export default LoginPage
+export default RegisterPage
