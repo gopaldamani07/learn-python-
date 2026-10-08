@@ -8,7 +8,7 @@ function formatDate(value) {
 }
 
 function TeamItem({ team, isOwner, onUpdate, onDelete }) {
-  const [mode, setMode] = useState('view') // 'view' | 'edit' | 'confirm-delete'
+  const [mode, setMode] = useState('view')
   const [deleting, setDeleting] = useState(false)
   const [error, setError] = useState('')
 
@@ -110,7 +110,7 @@ function TeamItem({ team, isOwner, onUpdate, onDelete }) {
 }
 
 function TeamsPage({ session, onLogout, onSessionExpired }) {
-  const [teams, setTeams] = useState(null) // null until the first load finishes
+  const [teams, setTeams] = useState(null)
   const [query, setQuery] = useState('')
   const [loadError, setLoadError] = useState('')
   const [reloadCount, setReloadCount] = useState(0)
@@ -159,7 +159,7 @@ function TeamsPage({ session, onLogout, onSessionExpired }) {
 
   async function handleCreate(team) {
     await callApi(createTeam, team)
-    // clear the search so the new team is visible in the list
+   
     setQuery('')
     reload()
   }

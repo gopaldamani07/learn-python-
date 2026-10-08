@@ -9,13 +9,13 @@ from jose import JWTError, jwt
 from passlib.context import CryptContext
 from pydantic import BaseModel, model_validator
 
-DB_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)), "users.duckdb")
+
 
 SECRET_KEY = os.getenv("SECRET_KEY", "dev-only-change-me")
 ALGORITHM = "HS256"
 TOKEN_EXPIRE_MINUTES = 30
 
-con = duckdb.connect(DB_PATH)
+con = duckdb.connect(":memory:")
 
 con.execute("CREATE SEQUENCE IF NOT EXISTS users_id_seq START 1")
 con.execute("""

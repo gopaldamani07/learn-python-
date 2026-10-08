@@ -3,7 +3,7 @@ import { login } from '../api.js'
 import PasswordField from '../components/PasswordField.jsx'
 import './AuthForm.css'
 
-// `notice` is an optional { username, tone, text } shown above the form
+
 function LoginPage({ notice, onLogin, onShowRegister }) {
   const knownUsername = notice?.username ?? ''
   const [username, setUsername] = useState(knownUsername)
